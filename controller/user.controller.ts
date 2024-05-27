@@ -10,6 +10,8 @@ export class UserController {
       
         this.login = this.login.bind(this);
         this.createUser = this.createUser.bind(this);
+        this.createCart = this.createCart.bind(this);
+
     }
 
     public async login(req: Request, res: Response, next:NextFunction): Promise<void> {
@@ -37,10 +39,25 @@ export class UserController {
 
             // Call the service to create a user
             const newUser = await this.userService.createUser(createUserParams);
+            const newCart = await this.userService.createCart(newUser._id)
 
-            res.status(201).json({ message: 'User created successfully', user: newUser });
+            res.status(201).json({ message: 'User and its cart created successfully', user: newUser,cart: newCart });
         } catch (err: any) {
             errorHandler(err,req,res,next)
         }
+    }
+
+    public async createCart(req: Request, res: Response,next:NextFunction){
+try {
+    const { user }= req.body 
+
+    const newCart = await this.userService.createCart(user)
+    res.status(201).json({ message: 'cart created successfully',cart: newCart });
+    
+} catch (err:any) {
+    errorHandler(err,req,res,next)
+}
+       
+
     }
 }

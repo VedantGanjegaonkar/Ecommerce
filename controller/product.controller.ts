@@ -33,9 +33,9 @@ export class ProduController{
 
         try {
 
-            const {name,description,price,category,stock,vendor} = req.body
+            const {name,description,price,category,stock,images,vendor} = req.body
 
-            const params = {name,description,price,category,stock,vendor}
+            const params = {name,description,price,category,stock,images,vendor}
 
             const newProduct= await this.productservice.createproduct(params)
 

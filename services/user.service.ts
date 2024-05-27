@@ -1,9 +1,10 @@
-import {User} from "../models/index"
+import {Cart, User,Role} from "../models/index"
 import { Schema } from 'mongoose';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
 import {NotFoundError, ValidationError, UnauthorizedError } from '../utils/errors';
+import { ICart } from "../models/cart.model";
 
 
 interface CreateUserParams {
@@ -38,6 +39,11 @@ export class UserService {
     public async createUser(params: CreateUserParams) {
         const { username, email, password, role } = params;
 
+        const roleDoc = await Role.findOne({ _id: role });
+    if (!roleDoc) {
+        throw new NotFoundError('Role not found');
+    }
+
         // Check if the email is already registered
         const existingUser = await User.findOne({ email });
         if (existingUser) {
@@ -50,5 +56,20 @@ export class UserService {
         const newUser = new User({ username, email, password:hashedPassword, role });
         await newUser.save();
         return newUser;
+
+       
+    }
+
+    public async createCart(id:Schema.Types.ObjectId):Promise<ICart>{
+
+        const newCart = new Cart({user:id})
+       
+        if(!newCart){
+            throw new NotFoundError('cart not created');
+        }
+        await newCart.save()
+
+        return newCart
+
     }
 }

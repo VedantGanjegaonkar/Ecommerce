@@ -19,11 +19,22 @@ import { AppError, NotFoundError, ValidationError, UnauthorizedError } from '../
 
 export class ProductService{
 
+    public async findProductByid(productID: string):Promise<IProduct>{
+        const product = await Product.findById(productID);
+
+        if(!product){
+            throw new NotFoundError("product not found ")
+        }
+
+        return product
+
+    }
+
     public async createproduct(params:createProductParams):Promise<IProduct>{
 
-    const {name,description,price,category,stock,vendor}=params
+    const {name,description,price,category,stock,images,vendor}=params
 
-        const newProduct = await Product.create({name,description,price,category,stock,vendor})
+        const newProduct = await Product.create({name,description,price,category,stock,images,vendor})
         return newProduct
 
     }
