@@ -74,7 +74,7 @@ public async getAllBooksService(params: ProductQueryParams) {
     ]
 
     let searchFilter: any = [];
-    let categoryArray: any[] = [];
+    
     
 
     if (params.searchQuery) {
@@ -108,16 +108,32 @@ public async getAllBooksService(params: ProductQueryParams) {
 
     if (params.category) {
 
-        categoryArray.push(params.category)
-        console.log(categoryArray[0]);
+      // let categoryArray: any[] = [];
+        // categoryArray.push(params.category)
+        // console.log(categoryArray);
+        // let flag = Array.isArray(params.category);
+        // console.log(flag);
+        
+       if(Array.isArray(params.category)){
+
+        pipeline.push({
+          $match: {
+              categoryName: {$all:  params.category}
+              
+          }
+      });
+
+       }else{
+        pipeline.push({
+          $match: {
+              categoryName: params.category
+              
+          }
+      });
+
+       }
 
        
-       pipeline.push({
-        $match: {
-            categoryName: {$all: categoryArray[0]}
-            // category: new ObjectId(category)
-        }
-    });
       
     }
   
