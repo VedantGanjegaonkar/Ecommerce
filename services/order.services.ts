@@ -81,4 +81,17 @@ public async createOrderFromUserId(userId: string): Promise<IOrder>{
     }
 };
 
+public async getOrderdetailById(userID:string):Promise<IOrder> {
+
+    const order = await Order.findOne({user:userID})
+
+    if(!order){
+        throw new NotFoundError("order not found")
+    }
+    return order
+
+}
+
+  
+
 }

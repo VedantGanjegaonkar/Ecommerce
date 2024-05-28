@@ -38,9 +38,9 @@ export class orderController{
             
         }
 
-       
+    }
 
-
-
+    public async genPdf(req:Request,res:Response,next:NextFunction){
+        
     }
 }
