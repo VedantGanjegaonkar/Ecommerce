@@ -5,7 +5,7 @@ import { NotFoundError, ValidationError } from "../utils/errors";
 
 export class CartService{
 
-    public async addProductToCart(userID:Schema.Types.ObjectId,productID:Schema.Types.ObjectId,quantity:number){
+    public async addProductToCart(userID:string,productID:Schema.Types.ObjectId,quantity:number){
         // Find the user's cart
         let cart = await Cart.findOne({ user: userID });
 
@@ -79,6 +79,24 @@ export class CartService{
         }
         
         cart.items.splice(itemIndex,1)
+        
+        await cart.save();
+    }
+
+    public async deleteAllitemsFromCart(userID:Schema.Types.ObjectId){
+
+        const user = await User.findById(userID);
+        if (!user) {
+            throw new Error("User not found");
+        }
+        // Find the user's cart
+        let cart = await Cart.findOne({ user: userID });
+    
+        if (!cart) {
+           throw new NotFoundError("cart not found ")
+        }
+
+        cart.items=[]
         
         await cart.save();
     }

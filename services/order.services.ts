@@ -28,26 +28,29 @@ public async createOrderFromUserId(userId: string): Promise<IOrder>{
 
         // Calculate total amount
         let totalAmount = 0;    
-        const orderItems = cart.items.map(item => {
+        const orderItems = await Promise.all(cart.items.map(async (item) => {
 
             const quantity = item.quantity
-            const pId : any =item.product
-            // const id = pId._id;
+            const pId : any =item.product.toString()
+
+            const product= await this.productService.findProductByid(pId)
+
             
-            console.log("................................this is fetched pID  ",pId);
-            console.log(quantity);
             
-            
+            const price= product.price
+            console.log("this is product price :",price);
            
-            // const itemTotal = product.price * item.quantity;
-            // totalAmount += itemTotal;
+            const itemTotal = price * quantity;
+            totalAmount += itemTotal;
+
+            console.log("this is totL :",totalAmount);
+            
             return {
                 product: item.product,
-                quantity: item.quantity,
-                price:100
-                // price: product.price
+                quantity: quantity,    
+                price: price
             };
-        });
+        }));
 
         // console.log("this is return from map :",orderItems);
         

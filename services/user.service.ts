@@ -72,4 +72,21 @@ export class UserService {
         return newCart
 
     }
+
+    public async getUserId(authHeader:string|undefined):Promise<string>{
+
+        if (!authHeader) {
+            throw new NotFoundError("header not found")
+           
+        }
+
+        const user =   jwt.verify(authHeader, 'secret') as { userId: string; role: string; iat: number; exp: number; };
+        if (!user) {
+            throw new NotFoundError("user not found (FORBIDEN)")
+        }
+
+        const userID = user.userId
+        return userID
+
+    }
 }

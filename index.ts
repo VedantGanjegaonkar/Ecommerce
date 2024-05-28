@@ -9,6 +9,8 @@ import productRoutes from "./routes/product.route"
 import cartRoutes from "./routes/cart.routes"
 import orderRoutes from "./routes/order.routes"
 
+import{adminOnly,anyLogedIn} from "./middleware/auth.middleware"
+
 const app = express()
 
 const port = process.env.PORT || 3000;
@@ -19,11 +21,11 @@ app.use(express.json());
 
 //routes
 
-app.use("/role",roleRoutes)
-app.use("/category",categoryRoutes)
+app.use("/role",adminOnly,roleRoutes)
+app.use("/category",adminOnly,categoryRoutes)
 app.use("/user",userRoutes)
 app.use("/product",productRoutes)
-app.use("/cart",cartRoutes)
+app.use("/cart",anyLogedIn,cartRoutes)
 
 app.use("/order",orderRoutes)
 

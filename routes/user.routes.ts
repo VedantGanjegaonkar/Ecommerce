@@ -9,7 +9,8 @@ const router = Router();
 
 router.post('/signup', userController.createUser);
 router.post('/login', userController.login);
-router.post('/createCart', userController.createCart);
+
+router.post('/createCart', userController.createCart); //optional 
 
 
 export default router

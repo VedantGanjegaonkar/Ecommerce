@@ -11,6 +11,7 @@ export class ProduController{
         this.productservice=new ProductService()
 
         this.createProduct=this.createProduct.bind(this)
+        this.getAllBooks=this.getAllBooks.bind(this)
     }
     // name: string;
     // description: string;
@@ -48,5 +49,25 @@ export class ProduController{
         }
 
 
+    }
+
+    public async getAllBooks(req: Request, res: Response,next:NextFunction): Promise<void>{
+        try {
+            const page = parseInt(req.query.page as string) || 1;
+            const limit = parseInt(req.query.limit as string) || 10;
+            const searchQuery: string = req.query.search as string;
+            const category: any = req.query.category as string;
+            
+
+            const params:any={ page, limit, searchQuery, category }
+
+            const result = await this.productservice.getAllBooksService(params);
+            // console.log(result);
+
+            res.status(200).json({ result });
+            
+        } catch (err:any) {
+            errorHandler(err,req,res,next)
+        }
     }
 }
