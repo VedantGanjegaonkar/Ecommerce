@@ -57,14 +57,24 @@ export class ProduController{
             const limit = parseInt(req.query.limit as string) || 10;
             const searchQuery: string = req.query.search as string;
             const category: any = req.query.category as string;
+            const pdfss :string=req.query.pdf as string
             
 
-            const params:any={ page, limit, searchQuery, category }
+            const params:any={ page, limit, searchQuery, category,pdfss }
 
-            const result = await this.productservice.getAllBooksService(params);
-            // console.log(result);
+            const result :any = await this.productservice.getAllBooksService(params);
+       
 
-            res.status(200).json({ result });
+            // if(pdfss){
+            //     res.setHeader("Content-Type", "application/pdf");
+            //     res.send(result) 
+
+            // }
+            // else
+                res.status(200).json({ result });
+
+            
+           
             
         } catch (err:any) {
             errorHandler(err,req,res,next)

@@ -2,12 +2,14 @@
 import express from "express"
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
+
 import roleRoutes from "./routes/role.routes"
 import categoryRoutes from "./routes/category.routes"
 import userRoutes from "./routes/user.routes"
 import productRoutes from "./routes/product.route"
 import cartRoutes from "./routes/cart.routes"
 import orderRoutes from "./routes/order.routes"
+import pdfRoutes from "./routes/pdf.routes"
 
 import{adminOnly,anyLogedIn} from "./middleware/auth.middleware"
 
@@ -28,6 +30,7 @@ app.use("/product",productRoutes)
 app.use("/cart",anyLogedIn,cartRoutes)
 
 app.use("/order",orderRoutes)
+app.use("/pdf",pdfRoutes)
 
 
 

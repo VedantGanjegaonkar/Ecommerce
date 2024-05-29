@@ -5,6 +5,7 @@ import bcrypt from 'bcrypt';
 
 import {NotFoundError, ValidationError, UnauthorizedError } from '../utils/errors';
 import { ICart } from "../models/cart.model";
+import { IUser } from "../models/user.model";
 
 
 interface CreateUserParams {
@@ -89,4 +90,17 @@ export class UserService {
         return userID
 
     }
+
+    
+public async getUserById(userID:string):Promise<IUser> {
+
+    const user = await User.findById(userID)
+
+    if(!user){
+        throw new NotFoundError("user not found")
+    }
+    return user
+
+}
+
 }
