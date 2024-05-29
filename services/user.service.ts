@@ -2,11 +2,12 @@ import {Cart, User,Role} from "../models/index"
 import { Schema } from 'mongoose';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
+import userValidationSchema from "../yup/user.yup"
 
 import {NotFoundError, ValidationError, UnauthorizedError } from '../utils/errors';
 import { ICart } from "../models/cart.model";
 import { IUser } from "../models/user.model";
-
+import yup from "yup"
 
 interface CreateUserParams {
     username: string;
@@ -38,27 +39,35 @@ export class UserService {
     }
 
     public async createUser(params: CreateUserParams) {
-        const { username, email, password, role } = params;
 
-        const roleDoc = await Role.findOne({ _id: role });
-    if (!roleDoc) {
-        throw new NotFoundError('Role not found');
-    }
+        
+            const { username, email, password, role } = params;
 
-        // Check if the email is already registered
-        const existingUser = await User.findOne({ email });
-        if (existingUser) {
-            throw new ValidationError('Email is already registered');
+            const roleDoc = await Role.findOne({ _id: role });
+        if (!roleDoc) {
+            throw new NotFoundError('Role not found');
         }
+    
+            // Check if the email is already registered
+            const existingUser = await User.findOne({ email });
+            if (existingUser) {
+                throw new ValidationError('Email is already registered');
+            }
 
-        const hashedPassword = await bcrypt.hash(password, 10);
+           const val= await userValidationSchema.validate(params, { abortEarly: false });
+            console.log("this is val ",val);
+            
+    
+    
+            const hashedPassword = await bcrypt.hash(password, 10);
+    
+            // Create a new user
+            const newUser = new User({ username, email, password:hashedPassword, role });
+            await newUser.save();
+            return newUser;
+            
+        
 
-        // Create a new user
-        const newUser = new User({ username, email, password:hashedPassword, role });
-        await newUser.save();
-        return newUser;
-
-       
     }
 
     public async createCart(id:Schema.Types.ObjectId):Promise<ICart>{
