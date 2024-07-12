@@ -1,14 +1,17 @@
 import { ProductService } from "../services/product.service";
 import { Request, Response,NextFunction } from 'express';
 import{errorHandler} from "../middleware/errorHandler"
-
+import { ApiHandler } from "../utils/apiHandler";
+import { UserService } from '../services/user.service';
 
 export class ProduController{
 
     private productservice:ProductService;
-
+    private userService:UserService
+    
     constructor(){
         this.productservice=new ProductService()
+        this.userService = new UserService()
 
         this.createProduct=this.createProduct.bind(this)
         this.getAllBooks=this.getAllBooks.bind(this)
@@ -33,22 +36,21 @@ export class ProduController{
     public async createProduct(req:Request,res:Response,next:NextFunction){
 
         try {
-
-            const {name,description,price,category,stock,images,vendor} = req.body
-
-            const params = {name,description,price,category,stock,images,vendor}
-
-            const newProduct= await this.productservice.createproduct(params)
-
-            res.status(200).json({message:"Product created success", product:newProduct})
-            
-        } catch (error:any) {
+           
+            let { name, description, price, category, stock, vendor } = req.body;
+            const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+            const profilePicLocalPath = files?.images?.[0]?.path;
+            const images = profilePicLocalPath;
+            category = JSON.parse(category);
+            const params = { name, description, price, category, stock, images, vendor };
+            const newProduct = await this.productservice.createProduct(params);
+      
+            res.status(200).json(new ApiHandler(newProduct,"product created succsesfully"));
+          } catch (error:any) {
             errorHandler(error,req,res,next)
 
             
         }
-
-
     }
 
     public async getAllBooks(req: Request, res: Response,next:NextFunction): Promise<void>{
@@ -65,17 +67,9 @@ export class ProduController{
             const result :any = await this.productservice.getAllBooksService(params);
        
 
-            // if(pdfss){
-            //     res.setHeader("Content-Type", "application/pdf");
-            //     res.send(result) 
-
-            // }
-            // else
                 res.status(200).json({ result });
 
-            
-           
-            
+                   
         } catch (err:any) {
             errorHandler(err,req,res,next)
         }

@@ -9,5 +9,5 @@ const userController = new CategoryController();
 const router = Router();
 
 router.post('/create', userController.createCategory);
-
+router.get('/get', userController.getAllCategories);
 export default router

@@ -9,16 +9,14 @@ import { join } from 'path';
 import convertHTMLToPDF from "pdf-puppeteer";
 
 
-interface createProductParams {
-
+interface IProductParams {
   name: string;
   description: string;
   price: number;
-  category: Schema.Types.ObjectId[];
+  category: string[];
   stock: number;
-  images?: string[];
-  vendor: Schema.Types.ObjectId;
-
+  images: string;
+  vendor: string;
 }
 
 interface ProductQueryParams {
@@ -296,14 +294,11 @@ export class ProductService {
 
   }
 
-  public async createproduct(params: createProductParams): Promise<IProduct> {
-
-    const { name, description, price, category, stock, images, vendor } = params
-
-    const newProduct = await Product.create({ name, description, price, category, stock, images, vendor })
-    return newProduct
-
+  public async createProduct(params: IProductParams) {
+    const newProduct = new Product(params);
+    return await newProduct.save();
   }
+  
   public async deleteProduct(productID: string): Promise<void> {
 
     const product = await Product.findById(productID);

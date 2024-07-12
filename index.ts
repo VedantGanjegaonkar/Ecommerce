@@ -2,7 +2,7 @@
 import express from "express"
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
-
+import cors from 'cors'
 import roleRoutes from "./routes/role.routes"
 import categoryRoutes from "./routes/category.routes"
 import userRoutes from "./routes/user.routes"
@@ -13,8 +13,10 @@ import pdfRoutes from "./routes/pdf.routes"
 
 import{adminOnly,anyLogedIn} from "./middleware/auth.middleware"
 
-const app = express()
 
+const app = express()
+app.use(cors());
+app.use('/public/uploads', express.static('uploads'));
 const port = process.env.PORT || 3000;
 const dbUrl = process.env.DATABASE_URL as string;
 
@@ -24,7 +26,7 @@ app.use(express.json());
 //routes
 
 app.use("/role",adminOnly,roleRoutes)
-app.use("/category",adminOnly,categoryRoutes)
+app.use("/category",categoryRoutes)
 app.use("/user",userRoutes)
 app.use("/product",productRoutes)
 app.use("/cart",anyLogedIn,cartRoutes)

@@ -1,6 +1,6 @@
 import { Request, Response,NextFunction } from 'express';
 import { Category, ICategory } from '../models/category.model';
-
+import { AppError, NotFoundError, ValidationError, UnauthorizedError } from '../utils/errors';
 export class CategoryController {
     public async createCategory(req: Request, res: Response): Promise<void> {
         try {
@@ -20,5 +20,23 @@ export class CategoryController {
         } catch (err : any) {
             res.status(500).json({ message: 'Failed to create category', error: err.message });
         }
+    }
+
+    public async getAllCategories(req: Request, res: Response):Promise<any>{
+
+        try {
+            const categories=await Category.find({})
+        if (!categories || categories.length === 0) {
+            throw new NotFoundError('No categories found');
+        }
+
+        res.status(201).json(categories);
+        
+            
+        } catch (err:any) {
+            res.status(500).json({ message: 'Failed to create category', error: err.message });
+        }
+
+        
     }
 }
